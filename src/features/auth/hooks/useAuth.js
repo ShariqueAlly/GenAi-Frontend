@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../auth.context";
-import { login, logout, register, getme } from "../services/auth.api";
+import { login, logout, register, getme, hasAuthToken } from "../services/auth.api";
 
 export const useAuth = ()=>{
     const context = useContext(AuthContext);
@@ -13,7 +13,6 @@ export const useAuth = ()=>{
         if(!data?.user){
           return { success: false, message: "Login failed. Please try again." };
         }
-        sessionStorage.setItem("session_active", "1");
         setUser(data.user)
         return { success: true };
         }catch(err){
@@ -46,7 +45,6 @@ export const useAuth = ()=>{
         setLoading(true);
         try{
          const data = await logout();
-         sessionStorage.removeItem("session_active");
          setUser(null)
 
         }catch(err){
@@ -60,8 +58,7 @@ export const useAuth = ()=>{
 
     useEffect(() => {
       const getAndSetUser = async () => {
-        const hasSession = sessionStorage.getItem("session_active") === "1";
-        if (!hasSession) {
+        if (!hasAuthToken()) {
           setUser(null);
           setLoading(false);
           try {
