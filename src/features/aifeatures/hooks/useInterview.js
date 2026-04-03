@@ -52,8 +52,9 @@ export const useInterview = () => {
                 const token = localStorage.getItem("auth_token");
                 const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
                 const apiBaseUrl = rawBaseUrl.endsWith("/api") ? rawBaseUrl : `${rawBaseUrl}/api`;
-                const downloadUrl = `${apiBaseUrl}/interview/report/${interviewId}/pdf?token=${encodeURIComponent(token || "")}`;
-                window.open(downloadUrl, "_blank", "noopener,noreferrer");
+                const downloadUrl = `${apiBaseUrl}/interview/report/${interviewId}/pdf?inline=1&token=${encodeURIComponent(token || "")}`;
+                // iOS Safari blocks programmatic downloads; navigate to the PDF so it opens in the viewer.
+                window.location.href = downloadUrl;
                 return;
             }
 
