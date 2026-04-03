@@ -48,7 +48,18 @@ export const useInterview = () => {
     const downloadReportPdf = async (interviewId)=>{
         try {
             const pdfBlob = await downloadInterviewReportPdf(interviewId);
-            const url = window.URL.createObjectURL(new Blob([pdfBlob]));
+            const blob = new Blob([pdfBlob], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent);
+
+            if (isIOS) {
+                // iOS Safari blocks programmatic downloads; open in a new tab instead.
+                window.open(url, "_blank", "noopener,noreferrer");
+                // Revoke after a short delay to allow the browser to load it.
+                setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+                return;
+            }
+
             const link = document.createElement("a");
             link.href = url;
             link.setAttribute("download", `interview_report_${interviewId}.pdf`);
