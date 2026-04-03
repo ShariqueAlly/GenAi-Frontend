@@ -1,0 +1,30 @@
+@use './styles/button.scss' ;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap');
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  background-color: #353131;
+  font-family: 'Space Grotesk', 'Sora', sans-serif;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  background-color: #353131;
+  color: whitesmoke;
+  font-family: 'Space Grotesk', 'Sora', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
