@@ -1,10 +1,21 @@
 import axios from "axios";
+
 const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 const apiBaseUrl = rawBaseUrl.endsWith("/api") ? rawBaseUrl : `${rawBaseUrl}/api`;
+
+const getToken = () => localStorage.getItem("auth_token");
+
 const api = axios.create({
-    baseURL: apiBaseUrl,
-    withCredentials: true
+    baseURL: apiBaseUrl
 })
+
+api.interceptors.request.use((config) => {
+    const token = getToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
 
 export const generateInterviewReport = async ({jobDescription, selfDescription, resume})=>{ 
     try {
