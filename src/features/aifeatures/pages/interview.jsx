@@ -212,6 +212,26 @@ const interview = ({ data: propData, reportId }) => {
         </aside>
 
         <section className='main-panel'>
+          <div className='mobile-sections'>
+            <button
+              className={section === 'technical' ? 'active' : ''}
+              onClick={() => { setSection('technical'); setSelectedIndex(0) }}
+            >
+              Technical
+            </button>
+            <button
+              className={section === 'behavioral' ? 'active' : ''}
+              onClick={() => { setSection('behavioral'); setSelectedIndex(0) }}
+            >
+              Behavioral
+            </button>
+            <button
+              className={section === 'roadmap' ? 'active' : ''}
+              onClick={() => { setSection('roadmap'); setSelectedRoadmapIndex(0) }}
+            >
+              Roadmap
+            </button>
+          </div>
           <div className='panel-heading'>
             <h2>{sectionTitle}</h2>
             {!isRoadmap && (
