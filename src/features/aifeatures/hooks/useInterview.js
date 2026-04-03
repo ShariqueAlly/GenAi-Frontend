@@ -47,18 +47,19 @@ export const useInterview = () => {
 }
     const downloadReportPdf = async (interviewId)=>{
         try {
+            const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent);
+            if (isIOS) {
+                const token = localStorage.getItem("auth_token");
+                const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+                const apiBaseUrl = rawBaseUrl.endsWith("/api") ? rawBaseUrl : `${rawBaseUrl}/api`;
+                const downloadUrl = `${apiBaseUrl}/interview/report/${interviewId}/pdf?token=${encodeURIComponent(token || "")}`;
+                window.open(downloadUrl, "_blank", "noopener,noreferrer");
+                return;
+            }
+
             const pdfBlob = await downloadInterviewReportPdf(interviewId);
             const blob = new Blob([pdfBlob], { type: "application/pdf" });
             const url = window.URL.createObjectURL(blob);
-            const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent);
-
-            if (isIOS) {
-                // iOS Safari blocks programmatic downloads; open in a new tab instead.
-                window.open(url, "_blank", "noopener,noreferrer");
-                // Revoke after a short delay to allow the browser to load it.
-                setTimeout(() => window.URL.revokeObjectURL(url), 10000);
-                return;
-            }
 
             const link = document.createElement("a");
             link.href = url;
