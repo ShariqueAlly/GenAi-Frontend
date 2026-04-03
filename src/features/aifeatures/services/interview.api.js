@@ -1,4 +1,5 @@
 import axios from "axios";
+import { clearAuthToken } from "../../auth/services/auth.api";
 
 const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 const apiBaseUrl = rawBaseUrl.endsWith("/api") ? rawBaseUrl : `${rawBaseUrl}/api`;
@@ -16,6 +17,15 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error?.response?.status === 401) {
+            clearAuthToken();
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const generateInterviewReport = async ({jobDescription, selfDescription, resume})=>{ 
     try {

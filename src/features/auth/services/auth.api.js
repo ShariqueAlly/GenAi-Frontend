@@ -22,6 +22,15 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error?.response?.status === 401) {
+            clearToken();
+        }
+        return Promise.reject(error);
+    }
+);
 
 export async function register({username, email, password}){
          try{
@@ -74,4 +83,8 @@ export async function getme(){
 
 export function hasAuthToken() {
     return Boolean(getToken());
+}
+
+export function clearAuthToken() {
+    clearToken();
 }
