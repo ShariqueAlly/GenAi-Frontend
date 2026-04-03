@@ -19,13 +19,24 @@ const interview = ({ data: propData, reportId }) => {
   // Load from API if reportId provided
   useEffect(() => {
     if ((activeReportId || reportId) && !propData && !contextReport) {
+      const interviewIdToFetch = activeReportId || reportId
+      const cached = localStorage.getItem(`interview_${interviewIdToFetch}`)
+      if (cached) {
+        try {
+          setData(JSON.parse(cached))
+        } catch (e) {
+          console.error('Failed to parse cached interview:', e)
+        }
+      }
+
       const fetchInterview = async () => {
         try {
-          const interviewIdToFetch = activeReportId || reportId
+          setLoading(true)
           const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
           const apiBaseUrl = rawBaseUrl.endsWith('/api') ? rawBaseUrl : `${rawBaseUrl}/api`
+          const token = localStorage.getItem('auth_token')
           const response = await fetch(`${apiBaseUrl}/interview/report/${interviewIdToFetch}`, {
-            credentials: 'include',
+            headers: token ? { Authorization: `Bearer ${token}` } : undefined,
           })
           if (response.ok) {
             const result = await response.json()
